@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html >
+  <script>
+    function startDictation() {
+  
+      if (window.hasOwnProperty('webkitSpeechRecognition')) {
+  
+        var recognition = new webkitSpeechRecognition();
+  
+        recognition.continuous = false;
+        recognition.interimResults = false;
+  
+        recognition.lang = "en-US";
+        recognition.start();
+  
+        recognition.onresult = function(e) {
+          document.getElementById('text').value
+                                   = e.results[0][0].transcript;
+          recognition.stop();
+          document.getElementById('form').submit();
+        };
+  
+        recognition.onerror = function(e) {
+          recognition.stop();
+        }
+  
+      }
+    }
+  
+  </script>
+<head>
+
+  <meta charset="UTF-8">
+  <title>Depression Detection</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link href="../static/css/style.css" rel="stylesheet">
+<body>
+  <div class="dep" style="margin-top: 6%; margin-left: 3%; float: left; opacity: 60%;">
+      <img src="https://github.com/SarathMajji1699/ImagesUpload/blob/main/dep.png?raw=true" width="800px" height="600px" style="border-radius: 20px;"/>
+    </div>
+ <div class="login">
+   <center><br><br><br><br><br><br>
+     <h1><u>Depression &nbsp; Detection</u></h1><br><br><br><br><br>
+
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="{{ url_for('predict')}}" method="post">
+
+       
+        {% if text%}
+    <textarea name="dtext" rows="5" cols="20" id="text" class="form-control" aria-label="With textarea" placeholder="{{text}}" x-webkit-speech></textarea>
+    {% else %}
+    <textarea name="dtext" rows="5" cols="20" id="text" class="form-control" aria-label="With textarea" placeholder="Enter Your Text Here" x-webkit-speech></textarea>
+    {%endif%}
+
+        <img onclick="startDictation();this.src='/static/images/voice_ani.gif';" style="width: 10%;height: 10%;" id="imgClickAndChange" class="mt-3" src="/static/images/voice_ani.gif " width="60" height="60"/>
+
+        <br><br><br>
+
+        <input type="submit" class="btn btn-primary btn-block btn-large" value="Predict">
+        <br>
+        <br>
+        <br>
+        <a href="{{url_for('twitter')}}" style="color: white;">Predict for Twitter account</a>
+    </form>
+
+ <br>
+   <br><br>
+   {% if index == 0 %}
+    <h1 style="color: green;"> {{prediction_text}} </h1>
+    {% elif index == 1 %}
+     <h1 style="color: red;"> {{prediction_text}} </h1>
+    {%endif%}
+  </center>
+  
+
+
+ </div>
+
+
+
+</body>
+</html>
